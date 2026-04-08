@@ -50,7 +50,7 @@ jobs:
           echo "${CHECKSUM} ${FILE}" | sha256sum -c
           tar -xf "${FILE}" goreleaser
 
-          if sudo -l &> /dev/null; then
+          if sudo -n true &> /dev/null; then
           	sudo install -m 755 goreleaser /usr/local/bin/goreleaser
           else
           	install -m 755 goreleaser /usr/local/bin/goreleaser
@@ -62,6 +62,14 @@ jobs:
         shell: bash
         run: |-
           goreleaser release
+          if [[ ! -f dist/metadata.json ]] || [[ ! -s dist/metadata.json ]]; then
+            echo "Missing required file: dist/metadata.json"
+            exit 1
+          fi
+          if [[ ! -f dist/artifacts.json ]] || [[ ! -s dist/artifacts.json ]]; then
+            echo "Missing required file: dist/artifacts.json"
+            exit 1
+          fi
           echo "metadata=$(tr -d '\n\r' < dist/metadata.json)" >> "${GITHUB_OUTPUT}"
           echo "artifacts=$(tr -d '\n\r' < dist/artifacts.json)" >> "${GITHUB_OUTPUT}"
         env:
