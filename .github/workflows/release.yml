@@ -60,7 +60,6 @@ jobs:
       - name: Run goreleaser
         id: goreleaser
         shell: bash
-        run: goreleaser release
         run: |-
           goreleaser release
           echo "metadata=$(tr -d '\n\r' < dist/metadata.json)" >> "${GITHUB_OUTPUT}"
