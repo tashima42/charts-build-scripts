@@ -26,9 +26,10 @@ jobs:
         run: |
           mkdir -p /tmp/gh
           GH_VERSION=${GH_CLI_VERSION#v}
-          curl -fsL https://github.com/cli/cli/releases/download/${GH_CLI_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz | tar xvzf - --strip-components=1 -C /tmp/gh && \
-            echo "${GH_CLI_SUM_amd64}  /tmp/gh/bin/gh" | sha256sum -c - && \
-          install -m 755 gh /usr/local/bin/gh
+          curl -fsL https://github.com/cli/cli/releases/download/${GH_CLI_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz -o /tmp/gh.tar.gz && \
+            echo "${GH_CLI_SUM_amd64}  /tmp/gh.tar.gz" | sha256sum -c - && \
+            tar -xf --strip-components=1 /tmp/gh.tar.gz -C /tmp/gh && \
+            install -m 755 /tmp/gh/bin/gh /usr/local/bin/gh
       - name: Git safe directory
         run: git config --global --add safe.directory "$PWD"
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
